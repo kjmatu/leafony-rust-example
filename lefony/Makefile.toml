@@ -1,0 +1,33 @@
+[tasks.build]
+description = "build leafony binary"
+command = "cargo"
+args = ["build"]
+
+[tasks.docker]
+description = "build leafony develop image"
+command = "docker"
+args = ["build", ".", "-t", "leafony-dev"]
+
+[tasks.detect]
+description = "detect leafony device file"
+script = ['''
+#!/usr/bin/env bash
+ls /dev/cu.usb*
+''']
+
+[tasks.write]
+description = "write binary to leafony"
+
+script = ['''
+#!/usr/bin/env bash
+avrdude -patmega328p -carduino -P${1} -b57600 -D -U flash:w:${2:-./target/avr-atmega328p/debug/lefony.elf}:e
+''']
+
+[tasks.start]
+description = "start develop container"
+command = "docker"
+args = ["run", "-it", "-v", "$PWD:/home", "leafony-dev", "bash"]
+# script = ['''
+# #!/usr/bin/env bash
+# docker run -it -v $PWD:/home leafony-dev bash
+# ''']
