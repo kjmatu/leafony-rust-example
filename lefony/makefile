@@ -5,7 +5,7 @@ image:
 
 .PHONY: start
 start:
-	docker run -it -v ${PWD}:/src leafony-dev bash
+	docker run -it -v ${PWD}:/src --name leafony leafony-dev bash
 
 # detect leafony device file
 .PHONY: detect
@@ -13,7 +13,7 @@ detect:
 	ls /dev/cu.usb*
 
 .PHONY: build
-build:
+build: ./target/avr-atmega328p/debug/lefony.elf
 	docker run --rm -v ${PWD}:/src leafony-dev cargo build
 
 
